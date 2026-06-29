@@ -127,3 +127,22 @@ quiz = {
          "options": ["An effective partial pressure", "A type of entropy", "Heat capacity ratio", "A rate constant"], "answer": 1},
     ],
 }
+
+#A dictionary maps each category name to a list of question dictionaries, and each question stores its correct answer as TEXT so the option order can be
+# shuffled safely at display time
+
+BASE_POINTS = 10        # points for any correct answer
+STARTING_LIVES = 3      # wrong answers allowed before a round ends early
+STREAK_FOR_BONUS = 3    # correct answers in a row needed to start earning a bonus
+BONUS_POINTS = 5        # extra points added once the streak bonus is active
+session_stats = {"total_correct": 0, "total_asked": 0, "total_score": 0}
+print("        CHEM-E TRIVIA CHALLENGE")
+print("=" * 45)
+print("Answer 10 questions per category. They get harder")
+print("as you go. Each correct answer is worth", BASE_POINTS, "points.")
+print("Get", STREAK_FOR_BONUS, "in a row to earn a +" + str(BONUS_POINTS), "streak bonus!")
+print("You have", STARTING_LIVES, "lives per round. Good luck!")
+print()
+
+#Sets starting values at 0s, sets the constant values for the game and displays intro screen
+
