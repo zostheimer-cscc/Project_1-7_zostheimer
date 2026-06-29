@@ -263,3 +263,19 @@ while keep_playing:
     if again == "n":
         keep_playing = False
     #ask whether to play again accepting only y or n
+
+print("=" * 45)
+print("            FINAL SESSION SUMMARY")
+print("=" * 45)
+print("Total questions answered:", session_stats["total_asked"])
+print("Total correct:", session_stats["total_correct"])
+print("Total score:", session_stats["total_score"])
+ 
+if session_stats["total_asked"] > 0:
+    percent = session_stats["total_correct"] / session_stats["total_asked"] * 100
+    print("Accuracy:", round(percent, 1), "percent")
+else:
+    print("Accuracy: no questions answered.")
+#show the percentage 
+ 
+print("Thanks for playing!")
