@@ -144,5 +144,122 @@ print("Get", STREAK_FOR_BONUS, "in a row to earn a +" + str(BONUS_POINTS), "stre
 print("You have", STARTING_LIVES, "lives per round. Good luck!")
 print()
 
-#Sets starting values at 0s, sets the constant values for the game and displays intro screen
+#sets starting values at 0s, sets the constant values for the game and displays intro screen
 
+keep_playing = True
+while keep_playing:
+ 
+    print("-" * 45)
+    print("Choose a category:")
+    category_names = list(quiz.keys())
+    #turn the keys into an indexable list so a number can map to a category
+    menu_number = 1
+    for name in category_names:
+        print("   " + str(menu_number) + ") " + name)
+        menu_number += 1
+    print("   " + str(len(category_names) + 1) + ") Quit")
+ 
+    while True:
+        pick = input("Enter your choice: ")
+        if pick.isdigit() and 1 <= int(pick) <= len(category_names) + 1:
+            pick = int(pick)
+            break
+        else:
+            print("   Please enter a number from the menu.")
+    #keep asking until the menu choice is a valid number
+ 
+    if pick == len(category_names) + 1:
+        keep_playing = False
+        continue
+    #the quit option is the last menu number
+ 
+    chosen_category = category_names[pick - 1]
+    questions = quiz[chosen_category]
+    #set up the chosen round from the picked category
+    print()
+    print("*** " + chosen_category + " round ***")
+    print()
+ 
+    lives = STARTING_LIVES
+    streak = 0
+    round_score = 0
+    round_correct = 0
+    question_count = 0
+    #per round trackers reset at the start of each category
+ 
+    for question in questions:
+        question_count += 1
+        session_stats["total_asked"] += 1
+        #loop through the 10 questions in order
+ 
+        correct_text = question["answer"]
+        shuffled_options = question["options"][:]
+        random.shuffle(shuffled_options)
+        #copy the options with [:] and shuffle the copy so the bank stays intact
+ 
+        print("Q" + str(question_count) + " | Lives:", lives, "| Streak:", streak)
+        print(question["question"])
+        number = 1
+        for option in shuffled_options:
+            print("   " + str(number) + ") " + option)
+            number += 1
+        #show the question header then number the shuffled options
+ 
+        while True:
+            choice = input("Your answer (1-" + str(len(shuffled_options)) + "): ")
+            if choice.isdigit() and 1 <= int(choice) <= len(shuffled_options):
+                choice = int(choice)
+                break
+            else:
+                print("   Please enter a number between 1 and", len(shuffled_options))
+        #keep asking until the answer is a real choice
+ 
+        picked_text = shuffled_options[choice - 1]
+        #convert the player's number back into the option text they picked
+
+        if picked_text == correct_text:
+            streak += 1
+            round_correct += 1
+            session_stats["total_correct"] += 1
+            #a correct answer grows the streak and the correct counters
+ 
+            earned = BASE_POINTS
+            if streak >= STREAK_FOR_BONUS:
+                earned += BONUS_POINTS
+                print("Correct! +" + str(earned), "(streak bonus!) Streak is now", streak)
+            else:
+                print("Correct! +" + str(earned) + ". Streak is now", streak)
+            #award base points plus a bonus 
+ 
+            round_score += earned
+            session_stats["total_score"] += earned
+        else:
+            lives -= 1
+            streak = 0
+            print("Wrong. The answer was:", correct_text + ".", "Lives left:", lives)
+            #a wrong answer costs a life and resets the streak
+ 
+        print()
+ 
+        if lives == 0:
+            print("Out of lives! The", chosen_category, "round is over.")
+            print()
+            break
+        #end the round early if the player is out of lives
+ 
+    print("--- Round Summary (" + chosen_category + ") ---")
+    print("Correct this round:", round_correct, "out of", question_count)
+    print("Points this round:", round_score)
+    print()
+    #display how the player did this round
+ 
+    while True:
+        again = input("Play another category? (y/n): ").lower()
+        if again == "y" or again == "n":
+            break
+        else:
+            print("   Please type y or n.")
+    print()
+    if again == "n":
+        keep_playing = False
+    #ask whether to play again accepting only y or n
